@@ -54,6 +54,3 @@ This project provides a **data-driven decision support system** that helps in:
   - Matplotlib  
   - Scikit-learn  
 
----
-
-## 📂 Project Structure
