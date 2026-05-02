@@ -68,22 +68,31 @@ freq = st.sidebar.selectbox(
 )
 
 # -------------------------------
-# TIME AGGREGATION (FIXED)
+# TIME AGGREGATION 
 # -------------------------------
+
 df_copy = df.copy()
 
-# clean dates
+# 🔥 STEP 1: force clean datetime
 df_copy["date"] = pd.to_datetime(df_copy["date"], errors="coerce")
+
+# 🔥 STEP 2: remove bad rows
 df_copy = df_copy.dropna(subset=["date"])
 
-# set index
+# 🔥 STEP 3: sort जरूरी है
+df_copy = df_copy.sort_values("date")
+
+# 🔥 STEP 4: set index
 df_copy = df_copy.set_index("date")
 
-# 🔥 FINAL FIX HERE
+# 🔥 STEP 5: RESAMPLE SAFE
 if freq == "Weekly":
     df_copy = df_copy.resample("W").mean(numeric_only=True).reset_index()
+
 elif freq == "Monthly":
-    df_copy = df_copy.resample("M").mean(numeric_only=True).reset_index()
+    df_copy = df_copy.resample("MS").mean(numeric_only=True).reset_index()
+    # 👆 IMPORTANT: "M" → "MS" (THIS FIXES YOUR ERROR)
+
 else:
     df_copy = df_copy.reset_index()
 
