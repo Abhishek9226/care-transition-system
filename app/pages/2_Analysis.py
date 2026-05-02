@@ -25,7 +25,8 @@ def load_data():
         "hhs_discharged"
     ]
 
-    df["date"] = pd.to_datetime(df["date"], format="%B %d, %Y")
+    # 🔥 SAFE DATE CONVERSION (FIX)
+    df["date"] = pd.to_datetime(df["date"], errors="coerce")
 
     for col in df.columns[1:]:
         df[col] = df[col].astype(str).str.replace(",", "")
@@ -67,14 +68,20 @@ freq = st.sidebar.selectbox(
 )
 
 # -------------------------------
-# TIME AGGREGATION
+# TIME AGGREGATION (FIXED)
 # -------------------------------
 df_copy = df.copy()
 
+# 🔥 IMPORTANT FIX
+df_copy = df_copy.dropna(subset=["date"])   # remove invalid dates
+df_copy = df_copy.set_index("date")         # set index
+
 if freq == "Weekly":
-    df_copy = df_copy.resample("W", on="date").mean().reset_index()
+    df_copy = df_copy.resample("W").mean().reset_index()
 elif freq == "Monthly":
-    df_copy = df_copy.resample("M", on="date").mean().reset_index()
+    df_copy = df_copy.resample("M").mean().reset_index()
+else:
+    df_copy = df_copy.reset_index()
 
 # -------------------------------
 # TREND + SMOOTHING
@@ -151,13 +158,20 @@ st.subheader("📊 Distribution Analysis")
 
 col1, col2 = st.columns(2)
 
-hist = px.histogram(df_copy, x=metric, nbins=40,
-                    title="Distribution",
-                    template="plotly_dark")
+hist = px.histogram(
+    df_copy,
+    x=metric,
+    nbins=40,
+    title="Distribution",
+    template="plotly_dark"
+)
 
-box = px.box(df_copy, y=metric,
-             title="Spread",
-             template="plotly_dark")
+box = px.box(
+    df_copy,
+    y=metric,
+    title="Spread",
+    template="plotly_dark"
+)
 
 col1.plotly_chart(hist, use_container_width=True)
 col2.plotly_chart(box, use_container_width=True)
