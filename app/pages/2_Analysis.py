@@ -72,10 +72,16 @@ freq = st.sidebar.selectbox(
 # -------------------------------
 df_copy = df.copy()
 
-# 🔥 IMPORTANT FIX
-df_copy = df_copy.dropna(subset=["date"])   # remove invalid dates
-df_copy = df_copy.set_index("date")         # set index
+# 🔥 FIX: clean dates properly
+df_copy["date"] = pd.to_datetime(df_copy["date"], errors="coerce")
 
+# remove invalid dates
+df_copy = df_copy.dropna(subset=["date"])
+
+# set index properly
+df_copy = df_copy.set_index("date")
+
+# resample safely
 if freq == "Weekly":
     df_copy = df_copy.resample("W").mean().reset_index()
 elif freq == "Monthly":
