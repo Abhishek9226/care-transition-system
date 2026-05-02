@@ -54,3 +54,20 @@ This project provides a **data-driven decision support system** that helps in:
   - Matplotlib  
   - Scikit-learn  
 
+---
+
+## 👨‍💻 About Me
+
+👋 I am **Abhishek Raut**, the developer and author of this project.
+
+💡 I built this system to apply:
+- 📊 Data Analytics  
+- 🤖 Machine Learning  
+- 🌍 Real-world problem solving  
+
+📈 My goal is to transform raw data into meaningful insights through intelligent systems.
+
+🚀 Passionate about:
+- Data Science  
+- Analytics  
+- Building impactful solutions  
